@@ -1,17 +1,67 @@
-# myTeam.py
-# ---------
-# Licensing Information:  You are free to use or extend these projects for
-# educational purposes provided that (1) you do not distribute or publish
-# solutions, (2) you retain this notice, and (3) you provide clear
-# attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
-# Attribution Information: The Pacman AI projects were developed at UC Berkeley.
-# The core projects and autograders were primarily created by John DeNero
-# (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and
-# Pieter Abbeel (pabbeel@cs.berkeley.edu).
+# Q-Learning Implementation Plan for Mini-Contest 2
 
+This document outlines the plan for implementing a Q-learning agent in the `myTeam.py` file for the Mini-Contest 2: Multi-Agent Adversarial Pacman project.
 
+## Objectives
+
+1. Implement a Q-learning agent that can learn optimal strategies for the Pacman game.
+2. Define a robust state representation and reward structure to facilitate effective learning.
+3. Integrate the Q-learning agent into the existing game framework.
+
+## Plan
+
+### 1. State Representation
+
+The state should include relevant information that impacts the agent's decision-making process. We will represent the state as a combination of:
+- Agent's position
+- Food locations
+- Wall locations
+- Opponent positions
+- Power pellet locations
+
+### 2. Reward Structure
+
+The reward structure will guide the agent towards desirable actions. The rewards and penalties are defined as:
+- Positive reward for eating food
+- Positive reward for returning food to the home side
+- Positive reward for eating power pellets
+- Penalty for being eaten by ghosts
+- Penalty for staying idle
+
+### 3. Q-Table Initialization
+
+Initialize the Q-table to store Q-values for state-action pairs. The Q-table will be updated based on the agent's experience.
+
+### 4. Q-Learning Algorithm
+
+Implement the Q-learning update rule:
+- Choose an action using an epsilon-greedy policy.
+- Update the Q-value based on the received reward and the maximum Q-value of the next state.
+
+### 5. Implementation Steps
+
+1. **Initialize Q-table and Parameters:**
+   - Learning rate (`alpha`)
+   - Discount factor (`gamma`)
+   - Exploration rate (`epsilon`)
+
+2. **Action Selection:**
+   - Implement epsilon-greedy action selection in the `chooseAction` method.
+
+3. **State Extraction:**
+   - Define the `getState` method to extract relevant state information from the game state.
+
+4. **Q-Table Update:**
+   - Implement the `updateQTable` method to update Q-values based on the agent's experience.
+
+5. **Reward Calculation:**
+   - Define the `getReward` method to calculate rewards based on game events.
+
+### 6. Code Implementation
+
+Here is the proposed implementation for `myTeam.py`:
+
+```python
 from captureAgents import CaptureAgent
 import random, time, util
 from game import Directions
@@ -141,4 +191,3 @@ class QLearningAgent(CaptureAgent):
         if my_state.getPosition() == my_state.start:
             reward -= 10  # Penalty for being eaten
         return reward
-
