@@ -26,7 +26,7 @@ This project is part of the CS 275: Artificial Life for Computer Graphics and Vi
 ## Installation
 1. **Clone the repository:**
    \`\`\`sh
-   git clone https://github.com/your-username/minicontest2.git
+   git clone https://github.com/magnaprog/minicontest2.git
    cd minicontest2
    \`\`\`
 2. **Install the required libraries:**
