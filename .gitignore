@@ -93,3 +93,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Unity
+/CTF-Pacman/Library/
+/CTF-Pacman/Logs/
+/CTF-Pacman/UserSettings/
+/CTF-Pacman/.vscode
+*.sln
+*.csproj
