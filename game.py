@@ -437,37 +437,54 @@ class GameStateData:
         map = Grid(width, height)
         if type(self.food) == type((1,2)):
             self.food = reconstituteGrid(self.food)
+        # print(width, height)
         for x in range(width):
             for y in range(height):
                 food, walls = self.food, self.layout.walls
-                map[x][y] = self._foodWallStr(food[x][y], walls[x][y])
+                map[x][y] = self._foodWallStr(food[x][y], walls[x][y], x)
 
-        for agentState in self.agentStates:
+        for i, agentState in enumerate(self.agentStates):
             if agentState == None: continue
             if agentState.configuration == None: continue
             x,y = [int( i ) for i in nearestPoint( agentState.configuration.pos )]
             agent_dir = agentState.configuration.direction
-            if agentState.isPacman:
-                map[x][y] = self._pacStr( agent_dir )
+            if i == 0:
+                if agentState.isPacman:
+                    map[x][y] = ' '
+                else:
+                    map[x][y] = ' '
+            elif i == 2:
+                if agentState.isPacman:
+                    map[x][y] = 'X'
+                else:
+                    map[x][y] = 'x'
             else:
-                map[x][y] = self._ghostStr( agent_dir )
+                if agentState.isPacman:
+                    map[x][y] = self._pacStr( agent_dir )
+                else:
+                    map[x][y] = self._ghostStr( agent_dir )
+
 
         for x, y in self.capsules:
             map[x][y] = 'o'
 
         return str(map) + ("\nScore: %d\n" % self.score)
 
-    def _foodWallStr( self, hasFood, hasWall ):
+    def _foodWallStr( self, hasFood, hasWall, x ):
         if hasFood:
-            return '.'
+            if x >= 16:
+                return '.'
+            else:
+                return ' '
         elif hasWall:
             return '%'
         else:
             return ' '
 
     def _pacStr( self, dir ):
+        return 'P'
         if dir == Directions.NORTH:
-            return 'v'
+            return 'v '
         if dir == Directions.SOUTH:
             return '^'
         if dir == Directions.WEST:
@@ -568,7 +585,8 @@ class Game:
         """
         Main control loop for game play.
         """
-        self.display.initialize(self.state.data)
+        if self.display:
+            self.display.initialize(self.state.data)
         self.numMoves = 0
 
         ###self.display.initialize(self.state.makeObservation(1).data)
@@ -700,7 +718,8 @@ class Game:
                 self.state = self.state.generateSuccessor( agentIndex, action )
 
             # Change the display
-            self.display.update( self.state.data )
+            if self.display:
+                self.display.update( self.state.data )
             ###idx = agentIndex - agentIndex % 2 + 1
             ###self.display.update( self.state.makeObservation(idx).data )
 
@@ -726,4 +745,5 @@ class Game:
                     self._agentCrash(agentIndex)
                     self.unmute()
                     return
-        self.display.finish()
+        if self.display:
+            self.display.finish()

@@ -103,3 +103,8 @@ Temporary Items
 
 # Demos
 Demos/
+
+
+*.onnx
+*.pth
+score
