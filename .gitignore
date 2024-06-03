@@ -93,3 +93,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+
+
+*.onnx
+*.pth
+score

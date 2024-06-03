@@ -757,155 +757,147 @@ def parseAgentArgs(str):
     opts[key] = val
   return opts
 
-def readCommand( argv ):
-  """
-  Processes the command used to run pacman from the command line.
-  """
-  from optparse import OptionParser
-  usageStr = """
-  USAGE:      python pacman.py <options>
-  EXAMPLES:   (1) python capture.py
-                  - starts a game with two baseline agents
-              (2) python capture.py --keys0
-                  - starts a two-player interactive game where the arrow keys control agent 0, and all other agents are baseline agents
-              (3) python capture.py -r baselineTeam -b myTeam
-                  - starts a fully automated game where the red team is a baseline team and blue team is myTeam
-  """
-  parser = OptionParser(usageStr)
+def readCommand(argv, red_agent=None):
+    from optparse import OptionParser
+    usageStr = """
+    USAGE:      python pacman.py <options>
+    EXAMPLES:   (1) python capture.py
+                    - starts a game with two baseline agents
+                (2) python capture.py --keys0
+                    - starts a two-player interactive game where the arrow keys control agent 0, and all other agents are baseline agents
+                (3) python capture.py -r baselineTeam -b myTeam
+                    - starts a fully automated game where the red team is a baseline team and blue team is myTeam
+    """
+    parser = OptionParser(usageStr)
 
-  parser.add_option('-r', '--red', help=default('Red team'),
-                    default='baselineTeam')
-  parser.add_option('-b', '--blue', help=default('Blue team'),
-                    default='baselineTeam')
-  parser.add_option('--red-name', help=default('Red team name'),
-                    default='Red')
-  parser.add_option('--blue-name', help=default('Blue team name'),
-                    default='Blue')
-  parser.add_option('--redOpts', help=default('Options for red team (e.g. first=keys)'),
-                    default='')
-  parser.add_option('--blueOpts', help=default('Options for blue team (e.g. first=keys)'),
-                    default='')
-  parser.add_option('--keys0', help='Make agent 0 (first red player) a keyboard agent', action='store_true',default=False)
-  parser.add_option('--keys1', help='Make agent 1 (second red player) a keyboard agent', action='store_true',default=False)
-  parser.add_option('--keys2', help='Make agent 2 (first blue player) a keyboard agent', action='store_true',default=False)
-  parser.add_option('--keys3', help='Make agent 3 (second blue player) a keyboard agent', action='store_true',default=False)
-  parser.add_option('-l', '--layout', dest='layout',
-                    help=default('the LAYOUT_FILE from which to load the map layout; use RANDOM for a random maze; use RANDOM<seed> to use a specified random seed, e.g., RANDOM23'),
-                    metavar='LAYOUT_FILE', default='defaultCapture')
-  parser.add_option('-t', '--textgraphics', action='store_true', dest='textgraphics',
-                    help='Display output as text only', default=False)
+    parser.add_option('-r', '--red', help=default('Red team'),
+                      default='baselineTeam')
+    parser.add_option('-b', '--blue', help=default('Blue team'),
+                      default='baselineTeam')
+    parser.add_option('--red-name', help=default('Red team name'),
+                      default='Red')
+    parser.add_option('--blue-name', help=default('Blue team name'),
+                      default='Blue')
+    parser.add_option('--redOpts', help=default('Options for red team (e.g. first=keys)'),
+                      default='')
+    parser.add_option('--blueOpts', help=default('Options for blue team (e.g. first=keys)'),
+                      default='')
+    parser.add_option('--keys0', help='Make agent 0 (first red player) a keyboard agent', action='store_true',default=False)
+    parser.add_option('--keys1', help='Make agent 1 (second red player) a keyboard agent', action='store_true',default=False)
+    parser.add_option('--keys2', help='Make agent 2 (first blue player) a keyboard agent', action='store_true',default=False)
+    parser.add_option('--keys3', help='Make agent 3 (second blue player) a keyboard agent', action='store_true',default=False)
+    parser.add_option('-l', '--layout', dest='layout',
+                      help=default('the LAYOUT_FILE from which to load the map layout; use RANDOM for a random maze; use RANDOM<seed> to use a specified random seed, e.g., RANDOM23'),
+                      metavar='LAYOUT_FILE', default='defaultCapture')
+    parser.add_option('-t', '--textgraphics', action='store_true', dest='textgraphics',
+                      help='Display output as text only', default=False)
 
-  parser.add_option('-q', '--quiet', action='store_true',
-                    help='Display minimal output and no graphics', default=False)
+    parser.add_option('-q', '--quiet', action='store_true',
+                      help='Display minimal output and no graphics', default=False)
 
-  parser.add_option('-Q', '--super-quiet', action='store_true', dest="super_quiet",
-                    help='Same as -q but agent output is also suppressed', default=False)
+    parser.add_option('-Q', '--super-quiet', action='store_true', dest="super_quiet",
+                      help='Same as -q but agent output is also suppressed', default=False)
 
-  parser.add_option('-z', '--zoom', type='float', dest='zoom',
-                    help=default('Zoom in the graphics'), default=1)
-  parser.add_option('-i', '--time', type='int', dest='time',
-                    help=default('TIME limit of a game in moves'), default=1200, metavar='TIME')
-  parser.add_option('-n', '--numGames', type='int',
-                    help=default('Number of games to play'), default=1)
-  parser.add_option('-f', '--fixRandomSeed', action='store_true',
-                    help='Fixes the random seed to always play the same game', default=False)
-  parser.add_option('--record', action='store_true',
-                    help='Writes game histories to a file (named by the time they were played)', default=False)
-  parser.add_option('--replay', default=None,
-                    help='Replays a recorded game file.')
-  parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
-                    help=default('How many episodes are training (suppresses output)'), default=0)
-  parser.add_option('-c', '--catchExceptions', action='store_true', default=False,
-                    help='Catch exceptions and enforce time limits')
+    parser.add_option('-z', '--zoom', type='float', dest='zoom',
+                      help=default('Zoom in the graphics'), default=1)
+    parser.add_option('-i', '--time', type='int', dest='time',
+                      help=default('TIME limit of a game in moves'), default=1200, metavar='TIME')
+    parser.add_option('-n', '--numGames', type='int',
+                      help=default('Number of games to play'), default=1)
+    parser.add_option('-f', '--fixRandomSeed', action='store_true',
+                      help='Fixes the random seed to always play the same game', default=False)
+    parser.add_option('--record', action='store_true',
+                      help='Writes game histories to a file (named by the time they were played)', default=False)
+    parser.add_option('--replay', default=None,
+                      help='Replays a recorded game file.')
+    parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
+                      help=default('How many episodes are training (suppresses output)'), default=0)
+    parser.add_option('-c', '--catchExceptions', action='store_true', default=False,
+                      help='Catch exceptions and enforce time limits')
 
-  options, otherjunk = parser.parse_args(argv)
-  assert len(otherjunk) == 0, "Unrecognized options: " + str(otherjunk)
-  args = dict()
+    options, otherjunk = parser.parse_args(argv)
+    assert len(otherjunk) == 0, "Unrecognized options: " + str(otherjunk)
+    args = dict()
 
-  # Choose a display format
-  #if options.pygame:
-  #   import pygameDisplay
-  #    args['display'] = pygameDisplay.PacmanGraphics()
-  if options.textgraphics:
-    import textDisplay
-    args['display'] = textDisplay.PacmanGraphics()
-  elif options.quiet:
-    import textDisplay
-    args['display'] = textDisplay.NullGraphics()
-  elif options.super_quiet:
-    import textDisplay
-    args['display'] = textDisplay.NullGraphics()
-    args['muteAgents'] = True
-  else:
-    import captureGraphicsDisplay
-    # Hack for agents writing to the display
-    captureGraphicsDisplay.FRAME_TIME = 0
-    args['display'] = captureGraphicsDisplay.PacmanGraphics(options.red, options.blue, options.zoom, 0, capture=True)
-    import __main__
-    __main__.__dict__['_display'] = args['display']
-
-
-  args['redTeamName'] = options.red_name
-  args['blueTeamName'] = options.blue_name
-
-  if options.fixRandomSeed: random.seed('cs188')
-
-  # Special case: recorded games don't use the runGames method or args structure
-  if options.replay != None:
-    print('Replaying recorded game %s.' % options.replay)
-    import pickle
-    recorded = pickle.load(open(options.replay, 'rb'))
-    recorded['display'] = args['display']
-    replayGame(**recorded)
-    sys.exit(0)
-
-  # Choose a pacman agent
-  redArgs, blueArgs = parseAgentArgs(options.redOpts), parseAgentArgs(options.blueOpts)
-  if options.numTraining > 0:
-    redArgs['numTraining'] = options.numTraining
-    blueArgs['numTraining'] = options.numTraining
-  nokeyboard = options.textgraphics or options.quiet or options.numTraining > 0
-  print('\nRed team %s with %s:' % (options.red, redArgs))
-  redAgents = loadAgents(True, options.red, nokeyboard, redArgs)
-  print('\nBlue team %s with %s:' % (options.blue, blueArgs))
-  blueAgents = loadAgents(False, options.blue, nokeyboard, blueArgs)
-  args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)],[]) # list of agents
-
-  numKeyboardAgents = 0
-  for index, val in enumerate([options.keys0, options.keys1, options.keys2, options.keys3]):
-    if not val: continue
-    if numKeyboardAgents == 0:
-      agent = keyboardAgents.KeyboardAgent(index)
-    elif numKeyboardAgents == 1:
-      agent = keyboardAgents.KeyboardAgent2(index)
+    if options.textgraphics:
+        import textDisplay
+        args['display'] = textDisplay.PacmanGraphics()
+    elif options.quiet:
+        import textDisplay
+        args['display'] = textDisplay.NullGraphics()
+    elif options.super_quiet:
+        import textDisplay
+        args['display'] = textDisplay.NullGraphics()
+        args['muteAgents'] = True
     else:
-      raise Exception('Max of two keyboard agents supported')
-    numKeyboardAgents += 1
-    args['agents'][index] = agent
+        import captureGraphicsDisplay
+        captureGraphicsDisplay.FRAME_TIME = 0
+        args['display'] = captureGraphicsDisplay.PacmanGraphics(options.red, options.blue, options.zoom, 0, capture=True)
+        import __main__
+        __main__.__dict__['_display'] = args['display']
 
-  # Choose a layout
-  import layout
-  layouts = []
-  for i in range(options.numGames):
-    if options.layout == 'RANDOM':
-      l = layout.Layout(randomLayout().split('\n'))
-    elif options.layout.startswith('RANDOM'):
-      l = layout.Layout(randomLayout(int(options.layout[6:])).split('\n'))
-    elif options.layout.lower().find('capture') == -1:
-      raise Exception( 'You must use a capture layout with capture.py')
+    args['redTeamName'] = options.red_name
+    args['blueTeamName'] = options.blue_name
+
+    if options.fixRandomSeed: random.seed('cs188')
+
+    if options.replay != None:
+        print('Replaying recorded game %s.' % options.replay)
+        import pickle
+        recorded = pickle.load(open(options.replay, 'rb'))
+        recorded['display'] = args['display']
+        replayGame(**recorded)
+        sys.exit(0)
+
+    redArgs, blueArgs = parseAgentArgs(options.redOpts), parseAgentArgs(options.blueOpts)
+    if options.numTraining > 0:
+        redArgs['numTraining'] = options.numTraining
+        blueArgs['numTraining'] = options.numTraining
+    nokeyboard = options.textgraphics or options.quiet or options.numTraining > 0
+
+    if red_agent is not None:
+        redAgents = [loadAgents(True, 'baselineTeam', nokeyboard, redArgs)[0], red_agent]
     else:
-      l = layout.getLayout( options.layout )
-    if l == None: raise Exception("The layout " + options.layout + " cannot be found")
+        redAgents = loadAgents(True, options.red, nokeyboard, redArgs)
 
-    layouts.append(l)
+    blueAgents = loadAgents(False, options.blue, nokeyboard, blueArgs)
+    args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)], [])  # list of agents
 
-  args['layouts'] = layouts
-  args['length'] = options.time
-  args['numGames'] = options.numGames
-  args['numTraining'] = options.numTraining
-  args['record'] = options.record
-  args['catchExceptions'] = options.catchExceptions
-  return args
+    numKeyboardAgents = 0
+    for index, val in enumerate([options.keys0, options.keys1, options.keys2, options.keys3]):
+        if not val: continue
+        if numKeyboardAgents == 0:
+            agent = keyboardAgents.KeyboardAgent(index)
+        elif numKeyboardAgents == 1:
+            agent = keyboardAgents.KeyboardAgent2(index)
+        else:
+            raise Exception('Max of two keyboard agents supported')
+        numKeyboardAgents += 1
+        args['agents'][index] = agent
+
+    import layout
+    layouts = []
+    for i in range(options.numGames):
+        if options.layout == 'RANDOM':
+            l = layout.Layout(randomLayout().split('\n'))
+        elif options.layout.startswith('RANDOM'):
+            l = layout.Layout(randomLayout(int(options.layout[6:])).split('\n'))
+        elif options.layout.lower().find('capture') == -1:
+            raise Exception('You must use a capture layout with capture.py')
+        else:
+            l = layout.getLayout(options.layout)
+        if l == None: raise Exception("The layout " + options.layout + " cannot be found")
+
+        layouts.append(l)
+
+    args['layouts'] = layouts
+    args['length'] = options.time
+    args['numGames'] = options.numGames
+    args['numTraining'] = options.numTraining
+    args['record'] = options.record
+    args['catchExceptions'] = options.catchExceptions
+    return args
+
 
 def randomLayout(seed = None):
   if not seed:
