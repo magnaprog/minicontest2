@@ -1,29 +1,26 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // [SerializeField] private BlueGhost[] blueGhosts;
-    // [SerializeField] private RedGhost[] redGhosts;
-    [SerializeField] private BlueAgent blueAgent;
-    [SerializeField] private RedAgent redAgent;
-    // [SerializeField] private BluePacman bluePacman;
-    // [SerializeField] private RedPacman redPacman;
+    [SerializeField] private BlueAgent[] blueAgents;
+    [SerializeField] private RedAgent[] redAgents;
     [SerializeField] private Transform blueFoods;
     [SerializeField] private Transform redFoods;
     // [SerializeField] private Text gameOverText;
-    // [SerializeField] private Text scoreText;
+    [SerializeField] private TextMeshProUGUI scoreText;
     // [SerializeField] private Text livesText;
 
     private int blueGhostMultiplier = 1;
     private int redGhostMultiplier = 1;
-    private int lives = 3;
-    private int score = 0;
+    private int lives = 12;
+    private int blue_score = 0;
+    private int red_score = 0;
 
-    public int Lives => lives;
-    public int Score => score;
+    // public int Lives => lives;
+    // public int Score => score;
 
     private void Awake()
     {
@@ -49,20 +46,24 @@ public class GameManager : MonoBehaviour
 
     private void NewGame()
     {
-        SetScore(0);
-        SetLives(3);
+        SetScore(0, 0);
+        SetLives(12);
         NewRound();
     }
 
     private void NewRound()
     {
         // gameOverText.enabled = false;
-        blueAgent.gameObject.SetActive(true);
-        redAgent.gameObject.SetActive(true);
+        foreach (BlueAgent blueAgent in blueAgents) {
+            blueAgent.gameObject.SetActive(true);
+        }
+        foreach (RedAgent redAgent in redAgents) {
+            redAgent.gameObject.SetActive(true);
+        }
+
         foreach (Transform blue_food in blueFoods) {
             blue_food.gameObject.SetActive(true);
         }
-
         foreach (Transform red_food in redFoods) {
             red_food.gameObject.SetActive(true);
         }
@@ -73,35 +74,24 @@ public class GameManager : MonoBehaviour
     private void ResetState()
     {   
         Debug.Log("Reset state");
-
-        // for (int i = 0; i < blueGhosts.Length; i++) {
-        //     blueGhosts[i].ResetState();
-        // }
-
-        // for (int i = 0; i < redGhosts.Length; i++) {
-        //     redGhosts[i].ResetState();
-        // }
-        blueAgent.ResetState();
-        redAgent.ResetState();
-        // bluePacman.ResetState();
-        // redPacman.ResetState();
+        foreach (BlueAgent blueAgent in blueAgents) {
+            blueAgent.ResetState();
+        }
+        foreach (RedAgent redAgent in redAgents) {
+            redAgent.ResetState();
+        }
     }
 
     private void GameOver()
     {
+        Debug.Log("Game Over");
         // gameOverText.enabled = true;
-        blueAgent.gameObject.SetActive(false);
-        redAgent.gameObject.SetActive(false);
-        // for (int i = 0; i < blueGhosts.Length; i++) {
-        //     blueGhosts[i].gameObject.SetActive(false);
-        // }
-
-        // for (int i = 0; i < redGhosts.Length; i++) {
-        //     redGhosts[i].gameObject.SetActive(false);
-        // }
-
-        // bluePacman.gameObject.SetActive(false);
-        // redPacman.gameObject.SetActive(false);
+        foreach (BlueAgent blueAgent in blueAgents) {
+            blueAgent.gameObject.SetActive(false);
+        }
+        foreach (RedAgent redAgent in redAgents) {
+            redAgent.gameObject.SetActive(false);
+        }
     }
 
     private void SetLives(int lives)
@@ -110,45 +100,47 @@ public class GameManager : MonoBehaviour
         // livesText.text = "x" + lives.ToString();
     }
 
-    private void SetScore(int score)
+    private void SetScore(int b_score, int r_score)
     {
-        this.score = score;
-        // scoreText.text = score.ToString().PadLeft(2, '0');
+        // 
+        blue_score = b_score;
+        red_score = r_score;
+        scoreText.text = "Score: Red " + red_score.ToString().PadLeft(2, '0') + " - " + blue_score.ToString().PadLeft(2, '0') + "Blue";
     }
 
-    public void BluePacmanEaten(BluePacman collided_blue_pacman)
+    public void BluePacmanEaten(BluePacman eaten_blue_pacman)
     {
         Debug.Log("Blue Pacman Eaten");
-        // bluePacman.DeathSequence();
-        collided_blue_pacman.DeathSequence();
+        eaten_blue_pacman.DeathSequence();
         SetLives(lives - 1);
-        Debug.Log(this.lives);
+        Debug.Log("lives:" + this.lives.ToString());
         if (lives > 0) {
-            Invoke(nameof(ResetState), 3f);
+            Debug.Log("Reset Blue Pacman");
+            // Invoke(nameof(eaten_blue_pacman.GetComponentInParent<BlueAgent>().ResetState), 3f);
+            eaten_blue_pacman.GetComponentInParent<BlueAgent>().ResetAfterEaten(3f);
         } else {
             GameOver();
         }
     }
 
-    public void RedPacmanEaten(RedPacman collided_red_pacman)
+    public void RedPacmanEaten(RedPacman eaten_red_pacman)
     {
         Debug.Log("Red Pacman Eaten");
-        // redPacman.DeathSequence();
-        collided_red_pacman.DeathSequence();
+        eaten_red_pacman.DeathSequence();
         SetLives(lives - 1);
-        Debug.Log(this.lives);
+        Debug.Log("lives:" + this.lives.ToString());
         if (lives > 0) {
-            Invoke(nameof(ResetState), 3f);
+            Debug.Log("Reset Red Pacman");
+            eaten_red_pacman.GetComponentInParent<RedAgent>().ResetAfterEaten(3f);
         } else {
             GameOver();
-            Debug.Log("GameOver");
         }
     }
 
     public void BlueGhostEaten(BlueGhost blue_ghost)
     {
         int points = blue_ghost.points * blueGhostMultiplier;
-        SetScore(score + points);
+        // SetScore(blue_score, red_score + points);
 
         blueGhostMultiplier++;
     }
@@ -156,19 +148,19 @@ public class GameManager : MonoBehaviour
     public void RedGhostEaten(RedGhost red_ghost)
     {
         int points = red_ghost.points * redGhostMultiplier;
-        SetScore(score + points);
+        // SetScore(blue_score + points, red_score);
 
         redGhostMultiplier++;
     }
 
     public void BlueFoodEaten(BlueFood blue_food, RedPacman red_pacman)
     {
-        Debug.Log("BlueFoodEaten");
+        // Debug.Log("BlueFoodEaten");
         blue_food.gameObject.SetActive(false);
         red_pacman.eatenFoods.Add(blue_food);
-        SetScore(score + blue_food.points);
+        SetScore(blue_score, red_score + blue_food.points);
         red_pacman.score += 1;
-        Debug.Log(red_pacman.score);
+        // Debug.Log(red_pacman.score);
 
         if (!HasRemainingBlueFoods())
         {
@@ -180,12 +172,12 @@ public class GameManager : MonoBehaviour
 
     public void RedFoodEaten(RedFood red_food, BluePacman blue_pacman)
     {
-        Debug.Log("RedFoodEaten");
+        // Debug.Log("RedFoodEaten");
         red_food.gameObject.SetActive(false);
         blue_pacman.eatenFoods.Add(red_food);
-        SetScore(score + red_food.points);
+        SetScore(blue_score + red_food.points, red_score);
         blue_pacman.score += 1;
-        Debug.Log(blue_pacman.score);
+        // Debug.Log(blue_pacman.score);
 
         if (!HasRemainingRedFoods())
         {
@@ -198,11 +190,10 @@ public class GameManager : MonoBehaviour
     public void BlueCapsuleEaten(BlueCapsule blue_capsule, RedPacman red_pacman)
     {
         Debug.Log("BlueCapsuleEaten");
-        // for (int i = 0; i < blueGhosts.Length; i++) {
-        //     blueGhosts[i].frightened.Enable(blue_capsule.duration);
-        // }
-        blueAgent.ghost.frightened.Enable(blue_capsule.duration);
-
+        foreach (BlueAgent blueAgent in blueAgents) {
+            blueAgent.ghost.frightened.Enable(blue_capsule.duration);
+        }
+        
         BlueFoodEaten(blue_capsule, red_pacman);
         CancelInvoke(nameof(ResetBlueGhostMultiplier));
         Invoke(nameof(ResetBlueGhostMultiplier), blue_capsule.duration);
@@ -211,11 +202,9 @@ public class GameManager : MonoBehaviour
     public void RedCapsuleEaten(RedCapsule red_capsule, BluePacman blue_pacman)
     {
         Debug.Log("RedCapsuleEaten");
-        // for (int i = 0; i < redGhosts.Length; i++) {
-        //     redGhosts[i].frightened.Enable(red_capsule.duration);
-        // }
-        redAgent.ghost.frightened.Enable(red_capsule.duration);
-
+        foreach (RedAgent redAgent in redAgents) {
+            redAgent.ghost.frightened.Enable(red_capsule.duration);
+        }
         RedFoodEaten(red_capsule, blue_pacman);
         CancelInvoke(nameof(ResetRedGhostMultiplier));
         Invoke(nameof(ResetRedGhostMultiplier), red_capsule.duration);

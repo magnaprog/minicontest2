@@ -29,7 +29,7 @@ public class BlueGhostScatter : BlueGhostBehavior
                 }
             }
 
-            // blue_ghost.movement.SetDirection(node.availableDirections[index]);
+            blue_ghost.movement.SetDirection(node.availableDirections[index]);
         }
     }
 

@@ -6,8 +6,8 @@ public class BlueAgent : MonoBehaviour
     [SerializeField] public BlueGhost ghost;
     const int GHOST = 0;
     const int PACMAN = 1;
-    public int state = PACMAN;
-    public int initialState = PACMAN;
+    public int state = GHOST;
+    public int initialState = GHOST;
     public Vector3 currentPosition;
     public Vector2 currentDirection;
     public Quaternion initialRotation;
@@ -24,7 +24,8 @@ public class BlueAgent : MonoBehaviour
         SetState();
     }
 
-    public void ResetState() {
+    public void ResetState() 
+    {
         state = initialState;
         if (state == GHOST) {
             gameObject.layer = LayerMask.NameToLayer("BlueGhost");
@@ -37,6 +38,11 @@ public class BlueAgent : MonoBehaviour
             ghost.gameObject.SetActive(false);
             pacman.ResetState();
         }
+    }
+
+    public void ResetAfterEaten(float delay)
+    {
+        Invoke(nameof(ResetState), delay);
     }
 
     public void SetState() 

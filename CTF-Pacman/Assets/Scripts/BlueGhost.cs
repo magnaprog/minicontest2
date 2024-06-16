@@ -1,4 +1,7 @@
 using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 [DefaultExecutionOrder(-10)]
 [RequireComponent(typeof(Movement))]
@@ -9,7 +12,7 @@ public class BlueGhost : MonoBehaviour
     public BlueGhostChase chase { get; private set; }
     public BlueGhostFrightened frightened { get; private set; }
     public BlueGhostBehavior initialBehavior;
-    public Transform target;
+    public RedPacman[] targets;
     public int points = 200;
 
     private void Awake()
@@ -19,6 +22,7 @@ public class BlueGhost : MonoBehaviour
         scatter = GetComponent<BlueGhostScatter>();
         chase = GetComponent<BlueGhostChase>();
         frightened = GetComponent<BlueGhostFrightened>();
+        movement.SetDirection(Vector2.up);
     }
 
     private void Start()
@@ -26,22 +30,6 @@ public class BlueGhost : MonoBehaviour
         ResetState();
     }
 
-    private void Update()
-    {
-        // Set the new direction based on the current input
-        if (Input.GetKeyDown(KeyCode.UpArrow)) {            // Input.GetKeyDown(KeyCode.W) || 
-            movement.SetDirection(Vector2.up);
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) {     // Input.GetKeyDown(KeyCode.S) || 
-            movement.SetDirection(Vector2.down);
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) {     // Input.GetKeyDown(KeyCode.A) || 
-            movement.SetDirection(Vector2.left);
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow)) {    // Input.GetKeyDown(KeyCode.D) || 
-            movement.SetDirection(Vector2.right);
-        }
-    }
 
     public void ResetState()
     {
@@ -78,5 +66,4 @@ public class BlueGhost : MonoBehaviour
             }
         }
     }
-
 }

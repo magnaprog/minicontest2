@@ -100,3 +100,6 @@ Temporary Items
 /CTF-Pacman/.vscode
 *.sln
 *.csproj
+
+# Demos
+Demos/

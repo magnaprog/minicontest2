@@ -77,16 +77,18 @@ public class BlueGhostFrightened : BlueGhostBehavior
             // Find the available direction that moves farthest from pacman
             foreach (Vector2 availableDirection in node.availableDirections)
             {
-                // If the distance in this direction is greater than the current
-                // max distance then this direction becomes the new farthest
-                Vector3 newPosition = transform.position + new Vector3(availableDirection.x, availableDirection.y);
-                float distance = (blue_ghost.target.position - newPosition).sqrMagnitude;
-
-                if (distance > maxDistance)
-                {
-                    direction = availableDirection;
-                    maxDistance = distance;
+                foreach (RedPacman target in blue_ghost.targets) {
+                    // If the distance in this direction is greater than the current
+                    // max distance then this direction becomes the new farthest
+                    Vector3 newPosition = transform.position + new Vector3(availableDirection.x, availableDirection.y);
+                    float distance = (target.transform.position - newPosition).sqrMagnitude;
+                    if (distance > maxDistance)
+                    {
+                        direction = availableDirection;
+                        maxDistance = distance;
+                    }
                 }
+                
             }
 
             blue_ghost.movement.SetDirection(direction);
