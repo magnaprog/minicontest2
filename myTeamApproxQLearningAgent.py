@@ -80,6 +80,7 @@ class ApproxQLearningOffense(CaptureAgent):
       return bestAction
 
     action = None
+
     if TRAINING:
       for action in legalActions:
         self.updateWeights(gameState, action)
@@ -92,6 +93,7 @@ class ApproxQLearningOffense(CaptureAgent):
         action = random.choice(legalActions)
     else:
       action = self.computeActionFromQValues(gameState)
+    
     return action
 
   def getWeights(self):
@@ -264,31 +266,24 @@ class FeaturesExtractor:
     else:
         features["home-distance"] = 0.0  # No incentive to return home when not a Pacman
 
-    # if len(ghosts) > 0:
-    #   minGhostDistance = min([self.agentInstance.getMazeDistance(agentPosition, g) for g in ghosts])
-    #   if minGhostDistance < 3:
-    #     features["minGhostDistance"] = minGhostDistance
-
-    # successor = self.agentInstance.getSuccessor(gameState, action)
-    # features['successorScore'] = self.agentInstance.getScore(successor)
-
-    
-
-    # capsules = self.agentInstance.getCapsules(gameState)
     if len(capsules) > 0:
+      # find distance to the closest capsule
       closestCap = min([self.agentInstance.getMazeDistance(agentPosition, cap) for cap in self.agentInstance.getCapsules(gameState)])
-    #   # print(f"Closest capsule: {closestCap}")
       features["closest-capsule"] = closestCap
-    # if there is a capsule at the next position then add the feature
+      
+      # if there is a capsule at the next position then add the feature
       for capsule in capsules:
         if capsule == (next_x, next_y):
           features["eats-capsule"] = 1.0
 
+    # find the closest food
     dist = self.closestFood((next_x, next_y), food, walls)
     if dist is not None:
       # make the distance a number less than one otherwise the update
       # will diverge wildly
       features["closest-food"] = float(dist) / (walls.width * walls.height)
+    
+    # divide all values by 10.0 to scale them smaller
     features.divideAll(10.0)
     return features
 
