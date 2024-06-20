@@ -162,7 +162,7 @@ if __name__ == '__main__':
     #     agent.printQTable()
 
     # Train your agent
-    trainAgent(agent, 5)  # Train for 1000 episodes
+    trainAgent(agent, 200)  # Train for 1000 episodes
 
     # Save the Q-table to a file
     agent.saveQTable('q_table.pkl')
