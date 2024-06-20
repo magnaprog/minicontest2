@@ -110,3 +110,10 @@ Demos/
 score
 
 logs/
+
+
+*.onnx
+*.pth
+score
+
+logs/
