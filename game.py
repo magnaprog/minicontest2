@@ -450,9 +450,9 @@ class GameStateData:
             agent_dir = agentState.configuration.direction
             if i == 0:
                 if agentState.isPacman:
-                    map[x][y] = ' '
+                    map[x][y] = 'T'
                 else:
-                    map[x][y] = ' '
+                    map[x][y] = 't'
             elif i == 2:
                 if agentState.isPacman:
                     map[x][y] = 'X'
