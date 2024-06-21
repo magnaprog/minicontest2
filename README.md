@@ -27,7 +27,9 @@ Below is a visual representation of the game layout used in our Capture The Flag
 ## Project Structure
 
 **src/**: Contains the main source code for running the simulations.
+
 **CFT-Pacman/**: Unity project folder for visualizing the game environment.
+
 **docs/**: Documentation of the project.
 
 ## Evaluation and Results
