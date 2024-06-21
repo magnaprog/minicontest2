@@ -58,7 +58,7 @@ We would like to thank Professor Terzopoulos for his guidance and support throug
 
 ## References
 
-For more detailed information on the advanced techniques and methodologies we use, please refer to the following sources:
+For more detailed information on the advanced techniques and methodologies we used, please refer to the following sources:
 
 - Schulman, John, et al. "Proximal policy optimization algorithms." arXiv preprint arXiv:1707.06347 (2017).
 - Kingma, Diederik P., and Jimmy Ba. "Adam: A method for stochastic optimization." arXiv preprint arXiv:1412.6980 (2014).
