@@ -100,7 +100,8 @@ Temporary Items
 /CTF-Pacman/.vscode
 *.sln
 *.csproj
-
+/CTF-Pacman/Assets/Scripts/features.py
+/CTF-Pacman/Assets/Scripts/features.py.meta
 # Demos
 Demos/
 

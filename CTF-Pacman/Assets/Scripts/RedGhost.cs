@@ -127,7 +127,6 @@ public class RedGhost : MonoBehaviour
     public int[] PositionToGridXY(Vector3 position)
     {
         int x, y;
-        
         if (position.x < 0) {
             x = (int)(position.x - 0.5) + 21;
         } else {
@@ -152,28 +151,9 @@ public class RedGhost : MonoBehaviour
         int x = grid_index[0];
         int y = grid_index[1];
         if (layout[y, x] == food_type) return 0;
-        int min_distance = -1;
-        int min_x = -1;
-        int min_y = -1;
-        for (int w = 21; w < 42; w++) {
-            for (int h = 0; h < 24; h++) {
-                if (layout[h, w] == food_type) {
-                    // Debug.Log("food: " + h + "," + w);
-                    int delta_x = x - w;
-                    int delta_y = y - h;
-                    if (delta_x < 0) delta_x *= -1;
-                    if (delta_y < 0) delta_y *= -1;
-                    int distance = delta_x + delta_y;
-                    if (min_distance == -1 || distance < min_distance) {
-                        min_x = w;
-                        min_y = h;
-                        min_distance = distance;
-                    }
-                }
-            }
-        }
-        if (min_distance == -1) min_distance = 0;
-        return (double)min_distance/(42+24);
+        int bfs_distance = BFS(x, y, food_type);
+        if (bfs_distance == -1) bfs_distance = 0;
+        return (double)bfs_distance/(42+24);
     }
 
     private double GetNumOfGhostInTwoSteps(Vector2 direction)
@@ -240,6 +220,47 @@ public class RedGhost : MonoBehaviour
         transform.position = new_position;
         Debug.Log("pou: " + transform.position);
         return true;
+    }
+
+    public int BFS(int x, int y, int target)
+    {
+        Queue<Vector3> queue = new Queue<Vector3>();
+        List<Vector2> visited = new List<Vector2>();
+        Vector2[] directions = {Vector2.up, Vector2.down, Vector2.left, Vector2.right};
+        queue.Enqueue(new Vector3(x, y, 0));
+        visited.Add(new Vector2(x, y));
+
+        while (queue.Count > 0) {
+            Vector3 dequeue = queue.Dequeue();
+            int dx = (int)dequeue.x;
+            int dy = (int)dequeue.y;
+            int dist = (int)dequeue.z;
+
+            if (layout[dy, dx] == target) {
+                Debug.Log("BFS(" + x + "," + y + "), target: " + target + "=" + dist);
+                return dist;
+            }
+            foreach (Vector2 direction in directions) {
+                int next_x = dx + (int)direction.x;
+                int next_y = dy + (int)direction.y;
+                if (next_x < 0 || next_x >= 42) continue;
+                if ((target == 2 || target == 3) && next_x <= 20) continue;
+                if (next_y < 0 || next_y >= 24) continue;
+                if (layout[next_y, next_x] == 1) continue;  // walls
+                bool exists = false;
+                foreach (Vector2 next in visited) {
+                    if (next.x == next_x && next.y == next_y) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (exists) continue;
+                visited.Add(new Vector2(next_x, next_y));
+                queue.Enqueue(new Vector3(next_x, next_y, dist + 1));
+            }
+        }
+        Debug.Log("BFS(" + x + "," + y + "), target: " + target + "=" + (-1));
+        return -1;
     }
 
     private double GetNumInvader()

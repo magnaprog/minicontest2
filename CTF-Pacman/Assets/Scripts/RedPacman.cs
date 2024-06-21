@@ -115,9 +115,6 @@ public class RedPacman : MonoBehaviour
     public int[] PositionToGridXY(Vector3 position)
     {
         int x, y;
-        // Debug.Log("RedPacman: PositionToGridXY");
-        // Debug.Log("position: " + position);
-        
         if (position.x < 0) {
             x = (int)(position.x - 0.5) + 21;
         } else {
@@ -129,7 +126,6 @@ public class RedPacman : MonoBehaviour
             y = 12 - (int)(position.y + 0.5); //-1 > 12, -12 > 23
         }
         int[] idx = {x, y};
-        // Debug.Log("x: " + x + ", y: " + y);
         return idx;
     }
     private void CheckAvailableDirections()
@@ -165,11 +161,9 @@ public class RedPacman : MonoBehaviour
         if (y % 100 < lower_bound || y % 100 > upper_bound) return false;
         x = x - x % 100 + 50;
         y = y - y % 100 + 50;
-        
         if (transform.position.x < 0) x *= -1;
         if (transform.position.y < 0) y *= -1;
         Vector3 new_position = new Vector3((float)x/100, (float)y/100, transform.position.z);
-        //Debug.Log("new_position: " + new_position);
         Debug.Log("RedPacman: OnGridCenter()");
         Debug.Log("position: " + transform.position);
         transform.position = new_position;
@@ -177,17 +171,51 @@ public class RedPacman : MonoBehaviour
         return true;
     }
 
+    public int BFS(int x, int y, int target)
+    {
+        Queue<Vector3> queue = new Queue<Vector3>();
+        List<Vector2> visited = new List<Vector2>();
+        Vector2[] directions = {Vector2.up, Vector2.down, Vector2.left, Vector2.right};
+        queue.Enqueue(new Vector3(x, y, 0));
+        visited.Add(new Vector2(x, y));
+
+        while (queue.Count > 0) {
+            Vector3 dequeue = queue.Dequeue();
+            int dx = (int)dequeue.x;
+            int dy = (int)dequeue.y;
+            int dist = (int)dequeue.z;
+
+            if (layout[dy, dx] == target) {
+                Debug.Log("BFS(" + x + "," + y + "), target: " + target + "=" + dist);
+                return dist;
+            }
+            foreach (Vector2 direction in directions) {
+                int next_x = dx + (int)direction.x;
+                int next_y = dy + (int)direction.y;
+                if (next_x < 0 || next_x >= 42) continue;
+                if ((target == 2 || target == 3) && next_x <= 20) continue;
+                if (next_y < 0 || next_y >= 24) continue;
+                if (layout[next_y, next_x] == 1) continue;  // walls
+                bool exists = false;
+                foreach (Vector2 next in visited) {
+                    if (next.x == next_x && next.y == next_y) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (exists) continue;
+                visited.Add(new Vector2(next_x, next_y));
+                queue.Enqueue(new Vector3(next_x, next_y, dist + 1));
+            }
+        }
+        Debug.Log("BFS(" + x + "," + y + "), target: " + target + "=" + (-1));
+        return -1;
+    }
+
     private double GetHomeDistance(Vector2 direction)
     {
         float next_x = transform.position.x + direction.x;
         if (next_x < 0) next_x *= -1;
-        // float next_y = transform.position.y + direction.y;
-        // float next_z = transform.position.z;
-        // Vector3 next_position = new Vector3(next_x, next_y, next_z);
-        // float delta_x = next_x - movement.startingPosition.x;
-        // float delta_y = next_y - movement.startingPosition.y;
-        // if (delta_x < 0) delta_x *= -1;
-        // if (delta_y < 0) delta_y *= -1;
         float home_distance = next_x/42;
         float num_carry = num_eaten_foods/5;
         return (double)(home_distance * num_carry);
@@ -195,8 +223,6 @@ public class RedPacman : MonoBehaviour
 
     private double GetClosestFood(int food_type, Vector2 direction)
     {
-        //Debug.Log("ClosestFood position: " + transform.position);
-        
         float next_x = transform.position.x + direction.x;
         float next_y = transform.position.y + direction.y;
         float next_z = transform.position.z;
@@ -205,28 +231,9 @@ public class RedPacman : MonoBehaviour
         int x = grid_index[0];
         int y = grid_index[1];
         if (layout[y, x] == food_type) return 0;
-        int min_distance = -1;
-        int min_x = -1;
-        int min_y = -1;
-        for (int w = 0; w < 42; w++) {
-            for (int h = 0; h < 24; h++) {
-                if (layout[h, w] == food_type) {
-                    // Debug.Log("food: " + h + "," + w);
-                    int delta_x = x - w;
-                    int delta_y = y - h;
-                    if (delta_x < 0) delta_x *= -1;
-                    if (delta_y < 0) delta_y *= -1;
-                    int distance = delta_x + delta_y;
-                    if (min_distance == -1 || distance < min_distance) {
-                        min_x = w;
-                        min_y = h;
-                        min_distance = distance;
-                    }
-                }
-            }
-        }
-        if (min_distance == -1) min_distance = 0;
-        return (double)min_distance/(42+24);
+        int bfs_distance = BFS(x, y, food_type);
+        if (bfs_distance == -1) bfs_distance = 0;
+        return (double)bfs_distance/(42+24);
     }
 
     private double GetNumOfGhostInTwoSteps(Vector2 direction)
@@ -279,17 +286,13 @@ public class RedPacman : MonoBehaviour
         double[] features = {
             closest_food, bias, num_ghosts, home_distance, eats_food, eats_capsule, closest_capsule
         };
-        // Debug.Log("FEATURES:" + direction);
-        //Debug.Log("closest food[" + features[0] + "],closest capsule[" + features[6] + "]");
         return features;
 
     }
 
     private Vector2 GetBestDirection()
     {
-        // Debug.Log("BlueGhost: GetBestDirection()");
         CheckAvailableDirections();
-        //Debug.Log("position: " + transform.position);
         double max_score = -9999;
         Vector2 best_direction = Vector2.zero;
         List<Vector2> best_actions = new List<Vector2>();
