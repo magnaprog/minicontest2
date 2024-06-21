@@ -30,10 +30,14 @@ To test the efficacy of our developed agents, we conducted a series of games com
 
 ## Future Work
 
-- **Hyperparameter Optimization**: Further experiments with PPO and Q-learning hyperparameters to enhance agent performance.
-- **Advanced Learning Techniques**: Integration of advanced methods such as deep Q-networks (DQN) and hierarchical reinforcement learning.
-- **Team-Based Decision Making**: Development of more sophisticated team strategies leveraging multi-agent reinforcement learning.
-- **Real-Time Adaptation**: Implementation of real-time learning mechanisms for dynamic strategy adjustments.
+### Enhance Team-Based Strategies
+Our current implementation focuses primarily on individual agent behaviors. Future research will extend this to incorporate more sophisticated team-based strategies, leveraging multi-agent reinforcement learning techniques to enable agents to communicate and coordinate their actions more effectively. This approach aims to find unique ways to defeat opponents and optimize overall team performance.
+
+### Integrate Advanced Learning Techniques
+Future work will explore integrating advanced learning techniques such as deep Q-networks (DQN) and Double DQN to further enhance the learning capabilities of our agents. These techniques have shown significant improvements in learning efficiency and performance in various environments, potentially leading to even more intelligent and adaptive behaviors in our Pacman agents. Additionally, methods like hierarchical reinforcement learning and actor-critic algorithms will be investigated to improve decision-making processes.
+
+### Explore Curriculum Learning
+To improve the generalization capabilities of our agents, we will investigate the use of curriculum learning. This involves training agents on simpler tasks before gradually increasing the complexity, leading to more robust learning outcomes. Curriculum learning can help agents develop foundational skills and gradually build on them to handle more complex scenarios effectively.
 
 ## Contributors
 
