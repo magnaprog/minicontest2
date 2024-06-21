@@ -1,1 +1,0 @@
-weights = {'closest-food': -2.6146680897306798, 'bias': 11.485343685723967, '#-of-ghosts-within-2-steps': -52.779566428318105, 'home-distance': -3.8485713513420645, 'eats-food': 55.7371501686541, 'eats-capsule': 45.068458715107035, 'closest-capsule': -0.4229778701674575}

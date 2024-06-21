@@ -1,1 +1,0 @@
-weights = {'num-invaders': -1200, 'on-defense': 150, 'invader-distance': -15, 'stopped': -125, 'reversed': -3}
