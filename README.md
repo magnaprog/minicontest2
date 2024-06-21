@@ -22,7 +22,7 @@ The goal of this project is to implement a dynamic and competitive multi-agent e
 
 - **src/**: Contains the main source code for running the simulations.
 - **CFT-Pacman/**: Unity project folder for visualizing the game environment.
-- **docs/**: Documentation and additional resources related to the project.
+- **docs/**: Documentation of the project.
 
 ## Evaluation and Results
 
