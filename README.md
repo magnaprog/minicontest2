@@ -17,3 +17,35 @@ The goal of this project is to implement a dynamic and competitive multi-agent e
     python capture.py -r baselineTeam.py -b myTeamApproxQLearningAgent.py -n 100 -l RANDOM
     ```
 3. You can open the `CFT-Pacman` folder in Unity to experience the game alternatively, but the final simulation with all available algorithms is simply in Python.
+
+## Project Structure
+
+- **src/**: Contains the main source code for running the simulations.
+- **CFT-Pacman/**: Unity project folder for visualizing the game environment.
+- **docs/**: Documentation and additional resources related to the project.
+
+## Evaluation and Results
+
+To test the efficacy of our developed agents, we conducted a series of games comparing our learning-based agents against baseline greedy agents. Our Approximate Q-Learning agents demonstrated superior performance with an 84% win rate, showcasing their ability to adapt and strategize effectively.
+
+## Future Work
+
+- **Hyperparameter Optimization**: Further experiments with PPO and Q-learning hyperparameters to enhance agent performance.
+- **Advanced Learning Techniques**: Integration of advanced methods such as deep Q-networks (DQN) and hierarchical reinforcement learning.
+- **Team-Based Decision Making**: Development of more sophisticated team strategies leveraging multi-agent reinforcement learning.
+- **Real-Time Adaptation**: Implementation of real-time learning mechanisms for dynamic strategy adjustments.
+
+## References
+
+For a comprehensive list of references and related works, please refer to the `references.bib` file in the repository.
+
+## Contributors
+
+- Kevin Lee
+- Yu-Hsin Weng
+- Varun Kumar
+- Siddarth Chalasani
+
+## Acknowledgments
+
+We would like to thank Professor Terzopoulos for his guidance and support throughout this project.
