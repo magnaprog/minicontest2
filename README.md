@@ -57,7 +57,7 @@ Siddarth Chalasani (Computer Science, UCLA)
 
 ## Acknowledgments
 
-We would like to thank Professor Terzopoulos for his guidance and support throughout this project.
+We would like to express our heartfelt gratitude to Professor Terzopoulos for his guidance and insightful feedback throughout the duration of this project. His expertise in computer vision and comupter graphics have been instrumental in shaping our work. We are grateful for the opportunity to learn and grow under his CS275 course.
 
 ## References
 
