@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Capture The Flag variation of Pacman using reinforcement learning algorithms.">
+  <meta property="og:title" content="Capture The Flag Pacman with Reinforcement Learning"/>
+  <meta property="og:description" content="Explore the implementation of reinforcement learning algorithms in a Capture The Flag variation of Pacman."/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <meta property="og:image" content="static/images/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:title" content="Capture The Flag Pacman with Reinforcement Learning">
+  <meta name="twitter:description" content="Explore the implementation of reinforcement learning algorithms in a Capture The Flag variation of Pacman.">
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="keywords" content="Reinforcement Learning, Pacman, Capture The Flag, Artificial Intelligence, Game Development">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Capture The Flag Pacman with Reinforcement Learning</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="video-wrapper header">
+    <div class="bg-overlay"></div>
+    <video playsinline autoplay muted loop poster="cake.jpg">
+      <source src="static/videos/banner_video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="xtitle is-1 publication-title">Capture The Flag Pacman with Reinforcement Learning</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/siddarth-chalasani" target="_blank">Siddarth Chalasani</a><sup>*</sup></span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/varun-kumar" target="_blank">Varun Kumar</a><sup>*</sup></span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/kevin-lee" target="_blank">Kevin Lee</a></span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/yu-hsin-weng" target="_blank">Yu-Hsin Weng</a></span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">UCLA<br>CS275, 2024</span>
+              <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="CS275_Report.pdf" target="_blank" class="external-link">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Report</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="static/pdfs/supplementary_material.pdf" target="_blank" class="external-link">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Supplementary</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://github.com/magnaprog/minicontest2" target="_blank" class="external-link">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/ARXIV_PAPER_ID" target="_blank" class="external-link">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="marquee-wrapper">
+      <div class="container">
+        <div class="marquee-block">
+          <div class="marquee-inner to-left">
+            <span>
+              <div class="marquee-item">
+                <img src="static/images/carousel1.jpg" alt="Pacman Gameplay"/>
+                <p class="text-white">Pacman Gameplay</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel2.jpg" alt="Agent Training"/>
+                <p class="text-white">Agent Training</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel3.jpg" alt="Reinforcement Learning"/>
+                <p class="text-white">Reinforcement Learning</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel4.jpg" alt="Unity Integration"/>
+                <p class="text-white">Unity Integration</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel5.jpg" alt="ONNX Models"/>
+                <p class="text-white">ONNX Models</p>
+              </div>
+            </span>
+            <span>
+              <div class="marquee-item">
+                <img src="static/images/carousel1.jpg" alt="Pacman Gameplay"/>
+                <p class="text-white">Pacman Gameplay</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel2.jpg" alt="Agent Training"/>
+                <p class="text-white">Agent Training</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel3.jpg" alt="Reinforcement Learning"/>
+                <p class="text-white">Reinforcement Learning</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel4.jpg" alt="Unity Integration"/>
+                <p class="text-white">Unity Integration</p>
+              </div>
+              <div class="marquee-item">
+                <img src="static/images/carousel5.jpg" alt="ONNX Models"/>
+                <p class="text-white">ONNX Models</p>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video poster="" id="tree" autoplay controls muted loop height="100%">
+        <source src="static/videos/banner_video.mp4" type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        Capture The Flag variation of Pacman using reinforcement learning algorithms like Q-Learning and PPO.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            This report presents the development and implementation of a Capture The Flag (CTF) variation of Pacman using both non-ML and ML approaches for agent behavior. The project involves the use of reinforcement learning (RL) algorithms such as Q-Learning and Proximal Policy Optimization (PPO) to enable adaptive agent strategies. This interdisciplinary approach integrates machine learning, game development, and artificial life concepts, making it highly relevant to the study of artificial life for computer graphics and vision.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <img src="static/images/carousel1.jpg" alt="Pacman Gameplay"/>
+        <h2 class="subtitle has-text-centered">
+          Pacman Gameplay
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel2.jpg" alt="Agent Training"/>
+        <h2 class="subtitle has-text-centered">
+          Agent Training
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel3.jpg" alt="Reinforcement Learning"/>
+        <h2 class="subtitle has-text-centered">
+          Reinforcement Learning
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel4.jpg" alt="Unity Integration"/>
+        <h2 class="subtitle has-text-centered">
+          Unity Integration
+        </h2>
+      </div>
+      <div class="item">
+        <img src="static/images/carousel5.jpg" alt="ONNX Models"/>
+        <h2 class="subtitle has-text-centered">
+          ONNX Models
+        </h2>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Video Presentation</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <div class="publication-video">
+            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Another Carousel</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-video1">
+          <video poster="" id="video1" autoplay controls muted loop height="100%">
+            <source src="static/videos/carousel1.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video2">
+          <video poster="" id="video2" autoplay controls muted loop height="100%">
+            <source src="static/videos/carousel2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay controls muted loop height="100%">
+            <source src="static/videos/carousel3.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Poster</h2>
+      <iframe src="static/pdfs/sample.pdf" width="100%" height="550"></iframe>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{chalasani2024capture,
+  title={Capture The Flag Pacman with Reinforcement Learning},
+  author={Siddarth Chalasani and Varun Kumar and Kevin Lee and Yu-Hsin Weng},
+  journal={CS275},
+  year={2024},
+  school={UCLA}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+<!-- End of Statcounter Code -->
+
+</body>
+</html>

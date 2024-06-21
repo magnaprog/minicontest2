@@ -1,144 +1,168 @@
-# myTeam.py
-# ---------
-# Licensing Information:  You are free to use or extend these projects for
-# educational purposes provided that (1) you do not distribute or publish
-# solutions, (2) you retain this notice, and (3) you provide clear
-# attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
-# Attribution Information: The Pacman AI projects were developed at UC Berkeley.
-# The core projects and autograders were primarily created by John DeNero
-# (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and
-# Pieter Abbeel (pabbeel@cs.berkeley.edu).
-
-
-from captureAgents import CaptureAgent
-import random, time, util
-from game import Directions
-import game
+import os
 import numpy as np
+from captureAgents import CaptureAgent
+from baselineTeam import ReflexCaptureAgent
+import distanceCalculator
+import random, time, util, sys, heapq
+import pickle
+from game import Directions, Actions
+from capture import readCommand
+from util import nearestPoint
+from numpy import exp, log10, sqrt
 
-#################
-# Team creation #
-#################
 
 def createTeam(firstIndex, secondIndex, isRed,
                first='QLearningAgent', second='QLearningAgent'):
-    """
-    This function should return a list of two agents that will form the
-    team, initialized using firstIndex and secondIndex as their agent
-    index numbers.  isRed is True if the red team is being created, and
-    will be False if the blue team is being created.
-    """
     return [eval(first)(firstIndex), eval(second)(secondIndex)]
 
-##########
-# Agents #
-##########
-
 class QLearningAgent(CaptureAgent):
-    """
-    A Q-learning agent for the Pac-Man game.
-    """
+    def __init__(self, index):
+        super().__init__(index)
+        self.epsilon = 0.2
+        self.alpha = 0.3
+        self.discount = 0.8
+        self.q_table = util.Counter()
+        self.episode_states = []
+        self.episode_actions = []
 
-    def registerInitialState(self, gameState):
-        """
-        This method handles the initial setup of the
-        agent to populate useful fields (such as what team
-        we're on).
-
-        A distanceCalculator instance caches the maze distances
-        between each pair of positions, so your agents can use:
-        self.distancer.getDistance(p1, p2)
-
-        IMPORTANT: This method may run for at most 15 seconds.
-        """
-        CaptureAgent.registerInitialState(self, gameState)
-        
-        # Initialize Q-table
-        self.q_table = {}
-        self.alpha = 0.1  # Learning rate
-        self.gamma = 0.9  # Discount factor
-        self.epsilon = 0.1  # Exploration rate
-        
-        self.prev_state = None
-        self.prev_action = None
-
-    def chooseAction(self, gameState):
-        """
-        Picks an action based on Q-learning policy.
-        """
-        state = self.getState(gameState)
-        actions = gameState.getLegalActions(self.index)
-        
-        # Epsilon-greedy action selection
-        if np.random.uniform(0, 1) < self.epsilon:
-            action = random.choice(actions)
+    def chooseAction(self, curState):
+        legal_actions = curState.getLegalActions(self.index)
+        if util.flipCoin(self.epsilon):
+            action = random.choice(legal_actions)
         else:
-            action = self.getBestAction(state, actions)
-        
-        # Update Q-table
-        if self.prev_state is not None and self.prev_action is not None:
-            self.updateQTable(self.prev_state, self.prev_action, gameState)
-        
-        # Store state and action
-        self.prev_state = state
-        self.prev_action = action
-        
+            # print(self.q_table.items())
+            q_values = [(self.q_table[(str(curState.data), action)], action) for action in legal_actions]
+            max_q_value = max(q_values, key=lambda x: x[0])[0]
+            best_actions = [action for q, action in q_values if q == max_q_value]
+            action = random.choice(best_actions)
+
+        self.episode_states.append(curState)
+        self.episode_actions.append(action)
         return action
 
-    def getState(self, gameState):
-        """
-        Extracts the relevant state information from the game state.
-        """
-        position = gameState.getAgentState(self.index).getPosition()
-        food = self.getFood(gameState)
-        walls = gameState.getWalls()
-        ghosts = self.getOpponents(gameState)
-        return (position, food, walls, ghosts)
+    def update(self, state, action, reward, nextState):
+        q_value = self.q_table[(str(state.data), action)]
+        # print("Q-value: ", q_value)
+        next_legal_actions = nextState.getLegalActions(self.index)
+        if next_legal_actions:
+            next_q_values = [self.q_table[(str(nextState.data), next_action)] for next_action in next_legal_actions]
+            max_next_q_value = max(next_q_values)
+        else:
+            max_next_q_value = 0.0
 
-    def getBestAction(self, state, actions):
-        """
-        Returns the best action for the given state based on Q-values.
-        """
-        q_values = [self.getQValue(state, action) for action in actions]
-        max_q = max(q_values)
-        best_actions = [actions[i] for i in range(len(actions)) if q_values[i] == max_q]
-        return random.choice(best_actions)
+        self.q_table[(str(state.data), action)] = q_value + self.alpha * (reward + self.discount * max_next_q_value - q_value)
 
-    def getQValue(self, state, action):
-        """
-        Returns the Q-value for the given state-action pair.
-        """
-        return self.q_table.get((state, action), 0.0)
+    def printQTable(self):
+        for state_action, q_value in self.q_table.items():
+            # print(state_action)
+            state, action = state_action
+            print(f"State: {state}, Action: {action}, Q-value: {q_value}")
+    
+    def saveQTable(self, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump(self.q_table, f)
+        print(f"Q-table saved to {filename}")
 
-    def updateQTable(self, prev_state, prev_action, gameState):
-        """
-        Updates the Q-value for the previous state-action pair.
-        """
-        reward = self.getReward(gameState)
-        state = self.getState(gameState)
-        actions = gameState.getLegalActions(self.index)
-        max_q = max([self.getQValue(state, action) for action in actions])
+    def loadQTable(self, filename):
+        with open(filename, 'rb') as f:
+            self.q_table = pickle.load(f)
+        print(f"Q-table loaded from {filename}")
+
+
+
+def state_representation(state):
+    """
+    Convert the game state to a state representation tensor.
+    """
+    features = []
+
+    # Add wall information
+    walls = state.getWalls().data
+    for x in range(len(walls)):
+        for y in range(len(walls[0])):
+            features.append(1 if walls[x][y] else 0)
+
+    # Add food information
+    red_food = state.getRedFood().data
+    blue_food = state.getBlueFood().data
+    for x in range(len(red_food)):
+        for y in range(len(red_food[0])):
+            features.append(1 if red_food[x][y] else 0)
+            features.append(1 if blue_food[x][y] else 0)
+
+    # Add capsule information
+    red_capsules = state.getRedCapsules()
+    blue_capsules = state.getBlueCapsules()
+    capsule_positions = [(x, y) for x in range(len(walls)) for y in range(len(walls[0]))]
+    for x, y in capsule_positions:
+        features.append(1 if (x, y) in red_capsules else 0)
+        features.append(1 if (x, y) in blue_capsules else 0)
+
+    # Add agent positions
+    num_agents = state.getNumAgents()
+    for i in range(num_agents):
+        pos = state.getAgentPosition(i)
+        if pos is not None:
+            features.append(pos[0])
+            features.append(pos[1])
+        else:
+            features.append(-1)
+            features.append(-1)
+
+    # Add agent states (whether they are Pacman or Ghost)
+    for i in range(num_agents):
+        agent_state = state.getAgentState(i)
+        features.append(1 if agent_state.isPacman else 0)
+
+    # Add score
+    features.append(state.getScore())
+
+    return np.array(features)
+
+
+
+def trainAgent(agent, num_episodes):
+    from capture import runGames, CaptureRules
+
+    for episode in range(num_episodes):
+        print(f"\n----- EPISODE {episode + 1} -----")
+
+        # Initialize the game with the specific agents
+        options = readCommand(sys.argv[1:], red_agent=agent)
+        games = runGames(**options)
+
+        # Get the final state and reward
+        final_state = games[0].state
+        # rep = state_representation(final_state)
+        # print(np.shape(rep))
+        reward = -1 if final_state.getScore() < 0 else -0.25 if final_state.getScore() == 0 else 1
+        print(f"Final score: {final_state.getScore()}")  # Print the final score
+        print(f"Reward: {reward}")  # Print the reward
+
+        for state, action in zip(agent.episode_states, agent.episode_actions):
+            agent.update(state, action, reward, final_state)
+
+        agent.episode_states = []
+        agent.episode_actions = []
+
+        # Print the Q-table after each iteration
+        # print(f"Q-table after episode {episode + 1}:")
+        # agent.printQTable()
+        print(f"Length of Q-table: {len(agent.q_table)}")
         
-        current_q = self.q_table.get((prev_state, prev_action), 0.0)
-        self.q_table[(prev_state, prev_action)] = current_q + self.alpha * (reward + self.gamma * max_q - current_q)
 
-    def getReward(self, gameState):
-        """
-        Defines the reward structure.
-        """
-        reward = 0
-        my_state = gameState.getAgentState(self.index)
-        if my_state.isPacman:
-            reward += 10  # Reward for being a Pacman
-            if my_state.getPosition() in self.getFood(gameState).asList():
-                reward += 50  # Reward for eating food
-            if my_state.getPosition() in self.getCapsules(gameState):
-                reward += 100  # Reward for eating power pellets
-        if my_state.scaredTimer > 0:
-            reward -= 5  # Penalty for being scared
-        if my_state.getPosition() == my_state.start:
-            reward -= 10  # Penalty for being eaten
-        return reward
+    agent.saveQTable('q_table.pkl')
 
+if __name__ == '__main__':
+    # Initialize your agent
+    agent = QLearningAgent(2)
+
+    # if os.path.exists('q_table.pkl'):
+    #     agent.loadQTable('q_table.pkl')
+    #     agent.printQTable()
+
+    # Train your agent
+    trainAgent(agent, 200)  # Train for 1000 episodes
+
+    # Save the Q-table to a file
+    agent.saveQTable('q_table.pkl')
