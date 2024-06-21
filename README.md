@@ -48,8 +48,11 @@ To improve the generalization capabilities of our agents, we will investigate th
 ## Contributors
 
 Kevin Lee (Mechanical and Aerospace Engineering, UCLA)
+
 Yu-Hsin Weng (Computer Science, UCLA)
+
 Varun Kumar (Computer Science, UCLA)
+
 Siddarth Chalasani (Computer Science, UCLA)
 
 ## Acknowledgments
