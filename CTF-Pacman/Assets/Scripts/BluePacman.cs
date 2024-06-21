@@ -145,9 +145,8 @@ public class BluePacman : MonoBehaviour
         if (layout[y-1, x] != 1) availableDirections.Add(Vector2.up);
         if (layout[y+1, x] != 1) availableDirections.Add(Vector2.down);
 
+        Debug.Log("----------------------");
         Debug.Log("position: " + transform.position);
-        Debug.Log("coordination: " + x + ", " + y);
-        Debug.Log("layout: " + layout[y, x]);
         foreach (Vector2 direction in availableDirections) {
             Debug.Log(direction);
         }
@@ -162,8 +161,6 @@ public class BluePacman : MonoBehaviour
         int upper_bound = 50 + err;
         if (x < 0) x *= -1;
         if (y < 0) y *= -1;
-        Debug.Log("BluePacman: OnGridCenter()");
-        Debug.Log("position: " + transform.position);
         if (x % 100 < lower_bound || x % 100 > upper_bound) return false;
         if (y % 100 < lower_bound || y % 100 > upper_bound) return false;
         x = x - x % 100 + 50;
@@ -171,7 +168,8 @@ public class BluePacman : MonoBehaviour
         if (transform.position.x < 0) x *= -1;
         if (transform.position.y < 0) y *= -1;
         Vector3 new_position = new Vector3((float)x/100, (float)y/100, transform.position.z);
-        //Debug.Log("new_position: " + new_position);
+        Debug.Log("BluePacman: OnGridCenter()");
+        Debug.Log("position: " + transform.position);
         transform.position = new_position;
         Debug.Log("pou: " + transform.position);
         return true;
@@ -189,7 +187,7 @@ public class BluePacman : MonoBehaviour
         // if (delta_x < 0) delta_x *= -1;
         // if (delta_y < 0) delta_y *= -1;
         float home_distance = next_x/42;
-        float num_carry = (num_eaten_foods + num_eaten_capsule)/5;
+        float num_carry = num_eaten_foods/5;
         return (double)(home_distance * num_carry);
     }
 
@@ -252,6 +250,18 @@ public class BluePacman : MonoBehaviour
         }
         return (double)num_ghost;
     }
+    private double GetEatsFood(int food_type, Vector2 direction) 
+    {
+        float next_x = transform.position.x + direction.x;
+        float next_y = transform.position.y + direction.y;
+        float next_z = transform.position.z;
+        Vector3 next_position = new Vector3(next_x, next_y, next_z);
+        int[] grid_index = PositionToGridXY(next_position);
+        int x = grid_index[0];
+        int y = grid_index[1];
+        if (layout[y, x] == food_type) return 1;
+        return 0;
+    }
 
     private double[] GetFeatures(Vector2 direction) {
         
@@ -259,8 +269,8 @@ public class BluePacman : MonoBehaviour
         double bias = 1;
         double num_ghosts = GetNumOfGhostInTwoSteps(direction);
         double home_distance = GetHomeDistance(direction);
-        double eats_food = (double)num_eaten_foods;
-        double eats_capsule = (double)num_eaten_capsule;
+        double eats_food = GetEatsFood(2, direction);
+        double eats_capsule = GetEatsFood(3, direction);
         double closest_capsule = GetClosestFood(3, direction);
 
         double[] features = {

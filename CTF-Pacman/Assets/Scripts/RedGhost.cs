@@ -213,13 +213,12 @@ public class RedGhost : MonoBehaviour
         if (layout[y-1, x] != 1) availableDirections.Add(Vector2.up);
         if (layout[y+1, x] != 1) availableDirections.Add(Vector2.down);
 
-        // Debug.Log("position: " + transform.position);
-        // Debug.Log("coordination: " + x + ", " + y);
-        // Debug.Log("layout: " + layout[y, x]);
-        // foreach (Vector2 direction in availableDirections) {
-        //     Debug.Log(direction);
-        // }
-        // Debug.Log("----------------------");
+        Debug.Log("----------------------");
+        Debug.Log("position: " + transform.position);
+        foreach (Vector2 direction in availableDirections) {
+            Debug.Log(direction);
+        }
+        Debug.Log("----------------------");
     }
 
     public bool OnGridCenter(int err)
