@@ -35,10 +35,6 @@ To test the efficacy of our developed agents, we conducted a series of games com
 - **Team-Based Decision Making**: Development of more sophisticated team strategies leveraging multi-agent reinforcement learning.
 - **Real-Time Adaptation**: Implementation of real-time learning mechanisms for dynamic strategy adjustments.
 
-## References
-
-For a comprehensive list of references and related works, please refer to the `references.bib` file in the repository.
-
 ## Contributors
 
 - Kevin Lee
