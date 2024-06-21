@@ -15,7 +15,6 @@
 from captureAgents import CaptureAgent
 import random, time, util
 from game import Directions, Actions
-import game
 from util import nearestPoint
 
 #################
@@ -158,11 +157,11 @@ class ApproxQLearningOffense(CaptureAgent):
     return reward
 
   def storeWeights(self):
-    with open('offense_weights.py', 'w') as f:
+    with open('weights/offense_weights.py', 'w') as f:
         f.write(f"weights = {self.weights}")
 
   def loadWeights(self):
-    from offense_weights import weights
+    from weights.offense_weights import weights
     self.weights = weights
 
   def final(self, state):
@@ -340,11 +339,11 @@ class ApproxQLearningDefense(CaptureAgent):
         return features * self.weights
     
     def storeWeights(self):
-        with open('defense_weights.py', 'w') as f:
+        with open('weights/defense_weights.py', 'w') as f:
             f.write(f"weights = {self.weights}")
 
     def loadWeights(self):
-        from defense_weights import weights
+        from weights.defense_weights import weights
         self.weights = weights
 
     def final(self, state):
