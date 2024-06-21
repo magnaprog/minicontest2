@@ -1,21 +1,19 @@
 using UnityEngine;
-
 public class RedAgent : MonoBehaviour
 {
     [SerializeField] public RedPacman pacman;
     [SerializeField] public RedGhost ghost;
-    
     const int GHOST = 0;
     const int PACMAN = 1;
-    public int state = GHOST;
-    public int initialState = GHOST;
+    public int state = PACMAN;
+    public int initialState = PACMAN;
     public Vector3 currentPosition;
     public Vector2 currentDirection;
     public Quaternion initialRotation;
-
+    
     private void Awake()
     {
-        Debug.Log("RedAgent: Awake");
+        //Debug.Log("RedAgent: Awake");
         initialRotation = transform.rotation;
         ResetState();
     }
@@ -29,10 +27,12 @@ public class RedAgent : MonoBehaviour
     {
         state = initialState;
         if (state == GHOST) {
+            gameObject.layer = LayerMask.NameToLayer("RedGhost");
             ghost.gameObject.SetActive(true);
             pacman.gameObject.SetActive(false);
             ghost.ResetState();
         } else {
+            gameObject.layer = LayerMask.NameToLayer("RedPacman");
             pacman.gameObject.SetActive(true);
             ghost.gameObject.SetActive(false);
             pacman.ResetState();
@@ -52,16 +52,14 @@ public class RedAgent : MonoBehaviour
             if (currentPosition.x < 0) {
                 state = GHOST;
                 Debug.Log("RedAgent: Pacman -> Ghost");
-                Debug.Log("Deposit: " + pacman.score.ToString() + "food");
+                //Debug.Log("Deposit: " + pacman.score.ToString() + "food");
                 pacman.eatenFoods.Clear();
                 ghost.transform.rotation = initialRotation;
                 ghost.gameObject.SetActive(true);
                 pacman.gameObject.SetActive(false);
                 ghost.ResetState();
-                ghost.transform.position = currentPosition;
+                ghost.transform.position = new Vector3(-0.5f, currentPosition.y, currentPosition.z);
                 ghost.movement.SetDirection(currentDirection);
-                Debug.Log(ghost.transform.position);
-                Debug.Log(ghost.movement.direction);
             }
         } else {
             currentPosition = ghost.transform.position;
@@ -72,7 +70,7 @@ public class RedAgent : MonoBehaviour
                 pacman.gameObject.SetActive(true);
                 ghost.gameObject.SetActive(false);
                 pacman.ResetState();
-                pacman.transform.position = currentPosition;
+                pacman.transform.position = new Vector3(0.5f, currentPosition.y, currentPosition.z);
                 pacman.movement.SetDirection(currentDirection);
             } 
         }     

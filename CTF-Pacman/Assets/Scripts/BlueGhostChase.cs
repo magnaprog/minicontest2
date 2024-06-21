@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class BlueGhostChase : BlueGhostBehavior
 {
-    private RedPacman trackedPacman = null;
-
     private void OnDisable()
     {
         blue_ghost.scatter.Enable();
@@ -16,7 +14,6 @@ public class BlueGhostChase : BlueGhostBehavior
         // Do nothing while the ghost is frightened
         if (node != null && enabled && !blue_ghost.frightened.enabled)
         {
-            if (trackedPacman != null) trackedPacman.NotTracked();
             Vector2 direction = Vector2.zero;
             float minDistance = float.MaxValue;
             
@@ -35,12 +32,10 @@ public class BlueGhostChase : BlueGhostBehavior
                     {
                         direction = availableDirection;
                         minDistance = distance;
-                        trackedPacman = target;
                     }
                 }
                 
             }
-            trackedPacman.Tracked();
             Debug.Log("Direction: " + direction);
             blue_ghost.movement.SetDirection(direction);
         }

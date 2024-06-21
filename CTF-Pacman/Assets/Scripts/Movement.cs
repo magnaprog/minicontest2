@@ -67,6 +67,10 @@ public class Movement : MonoBehaviour
         }
     }
 
+    public void SetPosition(Vector3 position) {
+        rigidbody.MovePosition(position);
+    }
+
     public bool Occupied(Vector2 direction)
     {
         // If no collider is hit then there is no obstacle in that direction

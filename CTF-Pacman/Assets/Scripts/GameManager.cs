@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetState()
     {   
-        Debug.Log("Reset state");
+        //Debug.Log("Reset state");
         foreach (BlueAgent blueAgent in blueAgents) {
             blueAgent.ResetState();
         }
@@ -108,10 +110,33 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Score: Red " + red_score.ToString().PadLeft(2, '0') + " - " + blue_score.ToString().PadLeft(2, '0') + "Blue";
     }
 
+    public int[] PositionToGridXY(Vector3 position)
+    {
+        int x, y;
+        // Debug.Log("GameManager: PositionToGridXY");
+        // Debug.Log("position: " + position);
+        
+        if (position.x < 0) {
+            x = (int)Math.Round(position.x - 0.5) + 21;
+        } else {
+            x = (int)Math.Round(position.x + 0.5) + 20;
+        }
+        if (position.y < 0) {
+            y = (int)Math.Round(position.y - 0.5) * -1 + 11;
+        } else {
+            y = 12 - (int)Math.Round(position.y + 0.5); //-1 > 12, -12 > 23
+        }
+        int[] idx = {x, y};
+        // Debug.Log("x: " + x + ", y: " + y);
+        return idx;
+    }
+
     public void BluePacmanEaten(BluePacman eaten_blue_pacman)
     {
         Debug.Log("Blue Pacman Eaten");
         eaten_blue_pacman.DeathSequence();
+        eaten_blue_pacman.num_eaten_foods = 0;
+        eaten_blue_pacman.num_eaten_capsule = 0;
         SetLives(lives - 1);
         Debug.Log("lives:" + this.lives.ToString());
         if (lives > 0) {
@@ -127,6 +152,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Red Pacman Eaten");
         eaten_red_pacman.DeathSequence();
+        eaten_red_pacman.num_eaten_foods = 0;
+        eaten_red_pacman.num_eaten_capsule = 0;
         SetLives(lives - 1);
         Debug.Log("lives:" + this.lives.ToString());
         if (lives > 0) {
@@ -158,6 +185,42 @@ public class GameManager : MonoBehaviour
         // Debug.Log("BlueFoodEaten");
         blue_food.gameObject.SetActive(false);
         red_pacman.eatenFoods.Add(blue_food);
+        Debug.Log("RedPacPos: " + red_pacman.transform.position);
+        int x100 = (int)Math.Floor(red_pacman.transform.position.x * 100);
+        int y100 = (int)Math.Floor(red_pacman.transform.position.y * 100);
+        if (x100 < 0) x100 *= -1;
+        if (y100 < 0) y100 *= -1;
+        Vector3 position = red_pacman.transform.position;
+        Vector3 adjust_position = position;
+        if (x100 % 100 < 5) {
+             if (red_pacman.movement.direction == Vector2.left) {
+                adjust_position = new Vector3(position.x-0.5f, position.y, position.z);
+            } else if (red_pacman.movement.direction == Vector2.right) {
+                adjust_position = new Vector3(position.x+0.5f, position.y, position.z);
+            }   
+        }
+        if (y100 % 100 < 5) {
+             if (red_pacman.movement.direction == Vector2.up) {
+                adjust_position = new Vector3(position.x, position.y+0.5f, position.z);
+            } else if (red_pacman.movement.direction == Vector2.down) {
+                adjust_position = new Vector3(position.x, position.y-0.5f, position.z);
+            }   
+        }
+        int[] grid_index = PositionToGridXY(adjust_position);
+        int x = grid_index[0];
+        int y = grid_index[1];
+        Debug.Log("(x,y): " + x + "," + y);
+        
+        if (red_pacman.layout[y, x] == 2) {
+            red_pacman.eatenFoodsXY.Add(new Vector2((float)x, (float)y));
+            red_pacman.num_eaten_foods += 1;
+        }
+        if (red_pacman.layout[y, x] == 3) {
+            red_pacman.eatenCapsulesXY.Add(new Vector2((float)x, (float)y));
+            red_pacman.num_eaten_capsule += 1;
+        }
+
+        red_pacman.layout[y, x] = 0;
         SetScore(blue_score, red_score + blue_food.points);
         red_pacman.score += 1;
         // Debug.Log(red_pacman.score);
@@ -172,9 +235,45 @@ public class GameManager : MonoBehaviour
 
     public void RedFoodEaten(RedFood red_food, BluePacman blue_pacman)
     {
-        // Debug.Log("RedFoodEaten");
+        Debug.Log("RedFoodEaten");
         red_food.gameObject.SetActive(false);
         blue_pacman.eatenFoods.Add(red_food);
+        Debug.Log("BluePacPos: " + blue_pacman.transform.position);
+        int x100 = (int)Math.Floor(blue_pacman.transform.position.x * 100);
+        int y100 = (int)Math.Floor(blue_pacman.transform.position.y * 100);
+        if (x100 < 0) x100 *= -1;
+        if (y100 < 0) y100 *= -1;
+        Vector3 position = blue_pacman.transform.position;
+        Vector3 adjust_position = position;
+        if (x100 % 100 < 5) {
+             if (blue_pacman.movement.direction == Vector2.left) {
+                adjust_position = new Vector3(position.x-0.5f, position.y, position.z);
+            } else if (blue_pacman.movement.direction == Vector2.right) {
+                adjust_position = new Vector3(position.x+0.5f, position.y, position.z);
+            }   
+        }
+        if (y100 % 100 < 5) {
+             if (blue_pacman.movement.direction == Vector2.up) {
+                adjust_position = new Vector3(position.x, position.y+0.5f, position.z);
+            } else if (blue_pacman.movement.direction == Vector2.down) {
+                adjust_position = new Vector3(position.x, position.y-0.5f, position.z);
+            }   
+        }
+        int[] grid_index = PositionToGridXY(adjust_position);
+        int x = grid_index[0];
+        int y = grid_index[1];
+        Debug.Log("(x,y): " + x + "," + y);
+        
+        if (blue_pacman.layout[y, x] == 2) {
+            blue_pacman.eatenFoodsXY.Add(new Vector2((float)x, (float)y));
+            blue_pacman.num_eaten_foods += 1;
+        }
+        if (blue_pacman.layout[y, x] == 3) {
+            blue_pacman.eatenCapsulesXY.Add(new Vector2((float)x, (float)y));
+            blue_pacman.num_eaten_capsule += 1;
+        }
+
+        blue_pacman.layout[y, x] = 0;        
         SetScore(blue_score + red_food.points, red_score);
         blue_pacman.score += 1;
         // Debug.Log(blue_pacman.score);
@@ -193,7 +292,6 @@ public class GameManager : MonoBehaviour
         foreach (BlueAgent blueAgent in blueAgents) {
             blueAgent.ghost.frightened.Enable(blue_capsule.duration);
         }
-        
         BlueFoodEaten(blue_capsule, red_pacman);
         CancelInvoke(nameof(ResetBlueGhostMultiplier));
         Invoke(nameof(ResetBlueGhostMultiplier), blue_capsule.duration);

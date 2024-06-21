@@ -11,7 +11,6 @@ public class RedGhostFrightened : RedGhostBehavior
 
     public override void Enable(float duration)
     {
-        Debug.Log("red-frightened");
         base.Enable(duration);
 
         body.enabled = false;
@@ -54,6 +53,7 @@ public class RedGhostFrightened : RedGhostBehavior
 
     private void OnEnable()
     {
+        Debug.Log(frightened.GetComponent<AnimatedSprite>());
         frightened.GetComponent<AnimatedSprite>().Restart();
         red_ghost.movement.speedMultiplier = 0.5f;
         eaten = false;
@@ -77,16 +77,18 @@ public class RedGhostFrightened : RedGhostBehavior
             // Find the available direction that moves farthest from pacman
             foreach (Vector2 availableDirection in node.availableDirections)
             {
-                // If the distance in this direction is greater than the current
-                // max distance then this direction becomes the new farthest
-                Vector3 newPosition = transform.position + new Vector3(availableDirection.x, availableDirection.y);
-                float distance = (red_ghost.target.position - newPosition).sqrMagnitude;
-
-                if (distance > maxDistance)
-                {
-                    direction = availableDirection;
-                    maxDistance = distance;
+                foreach (BluePacman target in red_ghost.targets) {
+                    // If the distance in this direction is greater than the current
+                    // max distance then this direction becomes the new farthest
+                    Vector3 newPosition = transform.position + new Vector3(availableDirection.x, availableDirection.y);
+                    float distance = (target.transform.position - newPosition).sqrMagnitude;
+                    if (distance > maxDistance)
+                    {
+                        direction = availableDirection;
+                        maxDistance = distance;
+                    }
                 }
+                
             }
 
             red_ghost.movement.SetDirection(direction);

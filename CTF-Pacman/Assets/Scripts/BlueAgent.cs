@@ -1,20 +1,19 @@
 using UnityEngine;
-
 public class BlueAgent : MonoBehaviour
 {
     [SerializeField] public BluePacman pacman;
     [SerializeField] public BlueGhost ghost;
     const int GHOST = 0;
     const int PACMAN = 1;
-    public int state = GHOST;
-    public int initialState = GHOST;
+    public int state = PACMAN;
+    public int initialState = PACMAN;
     public Vector3 currentPosition;
     public Vector2 currentDirection;
     public Quaternion initialRotation;
-
+    
     private void Awake()
     {
-        Debug.Log("BlueAgent: Awake");
+        //Debug.Log("BlueAgent: Awake");
         initialRotation = transform.rotation;
         ResetState();
     }
@@ -53,13 +52,13 @@ public class BlueAgent : MonoBehaviour
             if (currentPosition.x > 0) {
                 state = GHOST;
                 Debug.Log("BlueAgent: Pacman -> Ghost");
-                Debug.Log("Deposit: " + pacman.score.ToString() + "food");
+                //Debug.Log("Deposit: " + pacman.score.ToString() + "food");
                 pacman.eatenFoods.Clear();
                 ghost.transform.rotation = initialRotation;
                 ghost.gameObject.SetActive(true);
                 pacman.gameObject.SetActive(false);
                 ghost.ResetState();
-                ghost.transform.position = currentPosition;
+                ghost.transform.position = new Vector3(0.5f, currentPosition.y, currentPosition.z);
                 ghost.movement.SetDirection(currentDirection);
             }
         } else {
@@ -71,7 +70,7 @@ public class BlueAgent : MonoBehaviour
                 pacman.gameObject.SetActive(true);
                 ghost.gameObject.SetActive(false);
                 pacman.ResetState();
-                pacman.transform.position = currentPosition;
+                pacman.transform.position = new Vector3(-0.5f, currentPosition.y, currentPosition.z);
                 pacman.movement.SetDirection(currentDirection);
             } 
         }     
