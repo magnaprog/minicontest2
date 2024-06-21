@@ -58,7 +58,7 @@ We would like to thank Professor Terzopoulos for his guidance and support throug
 
 ## References
 
-For more detailed information on the advanced techniques and methodologies we aim to integrate into our future work, please refer to the following sources:
+For more detailed information on the advanced techniques and methodologies we use, please refer to the following sources:
 
 - Schulman, John, et al. "Proximal policy optimization algorithms." arXiv preprint arXiv:1707.06347 (2017).
 - Kingma, Diederik P., and Jimmy Ba. "Adam: A method for stochastic optimization." arXiv preprint arXiv:1412.6980 (2014).
@@ -66,5 +66,3 @@ For more detailed information on the advanced techniques and methodologies we ai
 - Foerster, Jakob, et al. "Counterfactual multi-agent policy gradients." Proceedings of the AAAI Conference on Artificial Intelligence. 2018.
 - Pan, Sinno Jialin, and Qiang Yang. "A survey on transfer learning." IEEE Transactions on knowledge and data engineering 22.10 (2009): 1345-1359.
 - Bengio, Yoshua, et al. "Curriculum learning." Proceedings of the 26th annual international conference on machine learning. 2009.
-
-These references provide foundational knowledge and advanced insights into the techniques we plan to implement and explore in future iterations of our project.
