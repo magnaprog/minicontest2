@@ -26,9 +26,9 @@ Below is a visual representation of the game layout used in our Capture The Flag
 
 ## Project Structure
 
-- **src/**: Contains the main source code for running the simulations.
-- **CFT-Pacman/**: Unity project folder for visualizing the game environment.
-- **docs/**: Documentation of the project.
+**src/**: Contains the main source code for running the simulations.
+**CFT-Pacman/**: Unity project folder for visualizing the game environment.
+**docs/**: Documentation of the project.
 
 ## Evaluation and Results
 
@@ -47,10 +47,10 @@ To improve the generalization capabilities of our agents, we will investigate th
 
 ## Contributors
 
-- Kevin Lee
-- Yu-Hsin Weng
-- Varun Kumar
-- Siddarth Chalasani
+Kevin Lee (Mechanical and Aerospace Engineering, UCLA)
+Yu-Hsin Weng (Computer Science, UCLA)
+Varun Kumar (Computer Science, UCLA)
+Siddarth Chalasani (Computer Science, UCLA)
 
 ## Acknowledgments
 
