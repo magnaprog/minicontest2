@@ -7,6 +7,10 @@ from captureAgents import CaptureAgent
 import sys
 from util import convert_onnx
 
+def createTeam(firstIndex, secondIndex, isRed,
+               first='PPOAgent', second='PPOAgent'):
+    return [eval(first)(firstIndex), eval(second)(secondIndex)]
+
 char_to_int = {
     '%': 1,
     ' ': 0,
@@ -59,7 +63,7 @@ class PPOAgent(CaptureAgent):
 
     def __init__(self, index):
         super().__init__(index)
-        observation_dimension = 514  # Define the dimension based on your state representation
+        observation_dimension = 614  # Define the dimension based on your state representation
         action_dimension = 5  # Define the action dimension
         self.policy_network = NeuralNetwork(observation_dimension, action_dimension)
         self.value_network = NeuralNetwork(observation_dimension, 1)
