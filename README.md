@@ -7,7 +7,7 @@ This repository contains the code for the Mini-Contest 2: Multi-Agent Adversaria
 The goal of this project is to implement a dynamic and competitive multi-agent environment where agents utilize Q-learning and evolutionary strategies to optimize their gameplay. The agents will demonstrate advanced strategic thinking, adaptability, and competitive behaviors.
 
 ## Getting Started
-1. Clone the repository.
+1. Clone the repository and cd into the src directory. 
 2. To run the Python simulation with the various algorithms, use the following command:
     ```bash
     python capture.py <team1> <team2>
