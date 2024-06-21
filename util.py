@@ -16,6 +16,7 @@ import sys
 import inspect
 import heapq, random
 import io
+import torch.onnx
 
 
 class FixedRandom:
@@ -651,3 +652,20 @@ def unmutePrint():
     sys.stdout = _ORIGINAL_STDOUT
     #sys.stderr = _ORIGINAL_STDERR
 
+def convert_onnx(model_player, input_size):
+    """
+    Export model to onnx file
+    :param model_player: model player (PPOAgent)
+    :param input_size: model input size
+    """
+    # set the model to inference mode
+    model_player.policy_network.train(False)
+    model_player.value_network.train(False)
+
+    # create a dummy input tensor
+    dummy_input = torch.randn(1, input_size, requires_grad=True, device="cpu")
+
+    # export the model
+    torch.onnx.export(model_player.policy_network, dummy_input, "pacman_policy.onnx")
+    torch.onnx.export(model_player.value_network, dummy_input, "pacman_value.onnx")
+    print('Policy and value model has been converted to ONNX.')
