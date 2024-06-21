@@ -12,8 +12,6 @@ Below is a visual representation of the game layout used in our Capture The Flag
 
 ![Game Layout](docs/game_layout.png)
 
-This image shows the initial setup of the game, highlighting the positions and states of the agents and the layout of the game environment.
-
 ## Getting Started
 1. Clone the repository and cd into the src directory. 
 2. To run the Python simulation with the various algorithms, use the following command:
@@ -28,9 +26,11 @@ This image shows the initial setup of the game, highlighting the positions and s
 
 ## Project Structure
 
-- **src/**: Contains the main source code for running the simulations.
-- **CFT-Pacman/**: Unity project folder for visualizing the game environment.
-- **docs/**: Documentation of the project.
+**src/**: Contains the main source code for running the simulations.
+
+**CFT-Pacman/**: Unity project folder for visualizing the game environment.
+
+**docs/**: Documentation of the project.
 
 ## Evaluation and Results
 
@@ -49,11 +49,25 @@ To improve the generalization capabilities of our agents, we will investigate th
 
 ## Contributors
 
-- Kevin Lee
-- Yu-Hsin Weng
-- Varun Kumar
-- Siddarth Chalasani
+Kevin Lee (Mechanical and Aerospace Engineering, UCLA)
+
+Yu-Hsin Weng (Computer Science, UCLA)
+
+Varun Kumar (Computer Science, UCLA)
+
+Siddarth Chalasani (Computer Science, UCLA)
 
 ## Acknowledgments
 
-We would like to thank Professor Terzopoulos for his guidance and support throughout this project.
+We would like to express our gratitude to Professor Terzopoulos for his guidance and insightful feedback throughout the duration of this project. His expertise in Computer Graphics and Vision have been instrumental in shaping our work. We are grateful for the opportunity to learn and grow under his CS275 course.
+
+## References
+
+For more detailed information on the advanced techniques and methodologies we used, please refer to the following sources:
+
+1. Schulman, John, et al. "Proximal policy optimization algorithms." arXiv preprint arXiv:1707.06347 (2017).
+2. Kingma, Diederik P., and Jimmy Ba. "Adam: A method for stochastic optimization." arXiv preprint arXiv:1412.6980 (2014).
+3. Lowe, Ryan, et al. "Multi-agent actor-critic for mixed cooperative-competitive environments." arXiv preprint arXiv:1706.02275 (2017).
+4. Foerster, Jakob, et al. "Counterfactual multi-agent policy gradients." Proceedings of the AAAI Conference on Artificial Intelligence. 2018.
+5. Pan, Sinno Jialin, and Qiang Yang. "A survey on transfer learning." IEEE Transactions on knowledge and data engineering 22.10 (2009): 1345-1359.
+6. Bengio, Yoshua, et al. "Curriculum learning." Proceedings of the 26th annual international conference on machine learning. 2009.
