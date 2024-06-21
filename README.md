@@ -56,7 +56,7 @@ To improve the generalization capabilities of our agents, we will investigate th
 
 We would like to thank Professor Terzopoulos for his guidance and support throughout this project.
 
-### References
+## References
 
 For more detailed information on the advanced techniques and methodologies we aim to integrate into our future work, please refer to the following sources:
 
