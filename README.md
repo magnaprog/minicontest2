@@ -6,6 +6,14 @@ This repository contains the code for the Mini-Contest 2: Multi-Agent Adversaria
 
 The goal of this project is to implement a dynamic and competitive multi-agent environment where agents utilize Q-learning and evolutionary strategies to optimize their gameplay. The agents will demonstrate advanced strategic thinking, adaptability, and competitive behaviors.
 
+## Game View
+
+Below is a visual representation of the game layout used in our Capture The Flag Pacman project:
+
+![Game Layout](docs/game_layout.png)
+
+This image shows the initial setup of the game, highlighting the positions and states of the agents and the layout of the game environment.
+
 ## Getting Started
 1. Clone the repository and cd into the src directory. 
 2. To run the Python simulation with the various algorithms, use the following command:
