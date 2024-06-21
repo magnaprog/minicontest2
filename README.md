@@ -6,23 +6,14 @@ This repository contains the code for the Mini-Contest 2: Multi-Agent Adversaria
 
 The goal of this project is to implement a dynamic and competitive multi-agent environment where agents utilize Q-learning and evolutionary strategies to optimize their gameplay. The agents will demonstrate advanced strategic thinking, adaptability, and competitive behaviors.
 
-## Features
-
-- Multi-Agent Environment: Agents control both Pacman and ghosts in a team-based capture-the-flag variant of Pacman.
-- Q-learning: Agents use Q-learning to optimize their decision-making process based on the game state.
-- Evolutionary Algorithms: Strategies that perform well propagate their traits to successive generations, enhancing overall strategic capabilities.
-- Real-Time Strategy Optimization: Agents continuously assess their performance during gameplay and adjust their strategies accordingly.
-
 ## Getting Started
-
-### Prerequisites
-
-- Python 3.x
-- Pygame library
-
-### Installation
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/minicontest2.git
-   cd minicontest2
+1. Clone the repository.
+2. To run the Python simulation with the various algorithms, use the following command:
+    ```bash
+    python capture.py <team1> <team2>
+    ```
+    You can find the team names from the team file names. For example, to pit greedy agents against approximate Q-learning agents for 100 games on random layout boards, use the following command:
+    ```bash
+    python capture.py -r baselineTeam.py -b myTeamApproxQLearningAgent.py -n 100 -l RANDOM
+    ```
+3. You can open the `CFT-Pacman` folder in Unity to experience the game alternatively, but the final simulation with all available algorithms is simply in Python.
